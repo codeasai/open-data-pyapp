@@ -125,4 +125,38 @@ def update_dataset(dataset_id):
         progress_bar.empty()
         error_msg = f"เกิดข้อผิดพลาด: {str(e)}"
         print(f"❌ {error_msg}")
-        return f"❌ {error_msg}" 
+        return f"❌ {error_msg}"
+
+def update_dataset_ranking(dataset_id, ranking):
+    """อัพเดท ranking ของ dataset"""
+    try:
+        # อ่านข้อมูลไฟล์
+        with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
+            all_files = json.load(f)
+        
+        # อัพเดท ranking สำหรับทุกไฟล์ในชุดข้อมูล
+        updated = False
+        for file in all_files:
+            if file['dataset_id'] == dataset_id:
+                file['ranking'] = ranking
+                updated = True
+        
+        if updated:
+            # บันทึกข้อมูลกลับ
+            with open('data/dataset_files.json', 'w', encoding='utf-8') as f:
+                json.dump(all_files, f, ensure_ascii=False, indent=2)
+            return True
+        return False
+    except Exception as e:
+        print(f"ไม่สามารถอัพเดท ranking: {str(e)}")
+        return False
+
+def get_dataset_files(dataset_id):
+    """ดึงข้อมูลไฟล์ของ dataset"""
+    try:
+        with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
+            all_files = json.load(f)
+        return [f for f in all_files if f['dataset_id'] == dataset_id]
+    except Exception as e:
+        print(f"ไม่สามารถอ่านข้อมูลไฟล์: {str(e)}")
+        return [] 

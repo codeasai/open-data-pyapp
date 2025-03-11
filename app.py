@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from utils.data_utils import load_datasets
+from utils.data_utils import load_datasets, get_dataset_files
 from utils.file_utils import format_file_types
-from utils.ui_utils import create_action_cell, apply_custom_css
+from utils.ui_utils import create_action_cell, apply_custom_css, create_ranking_selector
 
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
@@ -35,7 +35,7 @@ with col3:
 
 # ฟิลเตอร์ข้อมูล
 st.subheader("🔍 ค้นหาและกรองข้อมูล")
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     search_term = st.text_input("ค้นหาจากชื่อชุดข้อมูล", "")
@@ -56,6 +56,14 @@ with col3:
         ["ทั้งหมด"] + unique_file_types
     )
 
+with col4:
+    # เพิ่มตัวกรองตาม ranking
+    ranking_filter = st.selectbox(
+        "กรองตาม Ranking",
+        ["ทั้งหมด", "⭐⭐⭐⭐", "⭐⭐⭐", "⭐⭐", "⭐"],
+        help="กรองข้อมูลตามระดับคะแนน"
+    )
+
 # กรองข้อมูล
 filtered_df = df.copy()
 if search_term:
@@ -64,6 +72,17 @@ if selected_org != "ทั้งหมด":
     filtered_df = filtered_df[filtered_df['organization'] == selected_org]
 if selected_file_type != "ทั้งหมด":
     filtered_df = filtered_df[filtered_df['file_types'].str.contains(selected_file_type, case=False, na=False)]
+
+# เพิ่มตัวกรองตาม ranking
+if ranking_filter != "ทั้งหมด":
+    ranking_value = len(ranking_filter)  # นับจำนวนดาว
+    filtered_df = filtered_df[filtered_df.apply(
+        lambda x: any(
+            f.get('ranking', 0) == ranking_value 
+            for f in get_dataset_files(x['package_id'])
+        ),
+        axis=1
+    )]
 
 # แสดงผลข้อมูลในรูปแบบตาราง
 st.subheader(f"📋 รายการชุดข้อมูล ({len(filtered_df)} รายการ)")
@@ -119,6 +138,7 @@ st.markdown("""
     <div style="flex: 1">จำนวนทรัพยากร</div>
     <div style="flex: 2">ประเภทไฟล์</div>
     <div style="flex: 1">ปรับปรุงล่าสุด</div>
+    <div style="flex: 1">Ranking</div>
     <div style="flex: 1">Action</div>
 </div>
 """, unsafe_allow_html=True)
@@ -126,7 +146,7 @@ st.markdown("""
 # แสดงข้อมูลในรูปแบบตาราง
 for _, row in display_df.iterrows():
     with st.container():
-        cols = st.columns([3, 2, 1, 2, 1, 1])
+        cols = st.columns([3, 2, 1, 2, 1, 1, 1])
         with cols[0]:
             st.markdown(f"""<div style="white-space: normal;">{row['ชื่อชุดข้อมูล']}</div>""", unsafe_allow_html=True)
         with cols[1]:
@@ -134,11 +154,12 @@ for _, row in display_df.iterrows():
         with cols[2]:
             st.markdown(f"""<div style="text-align: center;">{row['จำนวนทรัพยากร']}</div>""", unsafe_allow_html=True)
         with cols[3]:
-            # ประเภทไฟล์มี HTML อยู่แล้ว
             st.markdown(row['ประเภทไฟล์'], unsafe_allow_html=True)
         with cols[4]:
             st.markdown(f"""<div style="white-space: nowrap;">{row['ปรับปรุงล่าสุด'][:10]}</div>""", unsafe_allow_html=True)
         with cols[5]:
+            create_ranking_selector(row)
+        with cols[6]:
             create_action_cell({
                 'package_id': row['package_id'],
                 'url': row['url']

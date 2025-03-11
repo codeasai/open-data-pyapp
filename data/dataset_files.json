@@ -6,7 +6,8 @@
     "format": "CSV",
     "url": "https://satun.gdcatalog.go.th/dataset/85a4231e-0169-4874-aff9-5a6e0d56ca99/resource/6a0d5bd4-3722-486c-b8b4-43f605635961/download/6a0d5bd4-3722-486c-b8b4-43f605635961.csv",
     "description": "สัดส่วนคนจน หมายถึง ร้อยละของประชากรที่มีรายจ่ายเพื่อการอุปโภคบริโภคเฉลี่ยต่อคนต่อเดือน ต่ำกว่าเส้นความยากจน",
-    "last_modified": "2025-02-11T10:12:04.031333"
+    "last_modified": "2025-02-11T10:12:04.031333",
+    "ranking": 4
   },
   {
     "dataset_id": "85a4231e-0169-4874-aff9-5a6e0d56ca99",
@@ -15,7 +16,8 @@
     "format": "CSV",
     "url": "https://satun.gdcatalog.go.th/dataset/85a4231e-0169-4874-aff9-5a6e0d56ca99/resource/90c62461-42c0-4501-8d89-03faf1a8e303/download/90c62461-42c0-4501-8d89-03faf1a8e303.csv",
     "description": "สัดส่วนคนจน หมายถึง ร้อยละของประชากรที่มีรายจ่ายเพื่อการอุปโภคบริโภคเฉลี่ยต่อคนต่อเดือน ต่ำกว่าเส้นความยากจน",
-    "last_modified": "2025-02-11T10:14:22.464165"
+    "last_modified": "2025-02-11T10:14:22.464165",
+    "ranking": 4
   },
   {
     "dataset_id": "52061f37-4135-4f53-a2ad-af6c8e95d103",
@@ -24,7 +26,8 @@
     "format": "XLSX",
     "url": "https://lopburi.gdcatalog.go.th/dataset/52061f37-4135-4f53-a2ad-af6c8e95d103/resource/da789a94-ec55-4a1d-99e5-87526219816f/download/.xlsx",
     "description": "โครงการชลประทานขนาดเล็กจังหวัดลพบุรี ตั้งแต่ต้นจนถึงปี 2561",
-    "last_modified": "2022-08-10T08:23:08.368763"
+    "last_modified": "2022-08-10T08:23:08.368763",
+    "ranking": 3
   },
   {
     "dataset_id": "b66468bb-9716-442d-bd20-7afcfab95055",
@@ -33,7 +36,8 @@
     "format": "PDF",
     "url": "https://prachuapkhirikhan.gdcatalog.go.th/dataset/b66468bb-9716-442d-bd20-7afcfab95055/resource/86eeb04f-8c1e-45c9-9182-b0730fa6c27f/download/-.pdf",
     "description": "",
-    "last_modified": "2024-08-26T02:39:50.516976"
+    "last_modified": "2024-08-26T02:39:50.516976",
+    "ranking": 1
   },
   {
     "dataset_id": "e0b36bdf-99d5-4aa1-a068-716ad1d66975",
@@ -51,7 +55,8 @@
     "format": "PDF",
     "url": "https://amnatcharoen.gdcatalog.go.th/dataset/09e16005-7328-47b3-9a15-124e1fd96ae0/resource/ef27a4c0-3b98-4305-92e7-ed61f6503415/download/-65-5.2565-1.pdf",
     "description": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2565",
-    "last_modified": "2023-04-06T04:57:31.205087"
+    "last_modified": "2023-04-06T04:57:31.205087",
+    "ranking": 2
   },
   {
     "dataset_id": "09e16005-7328-47b3-9a15-124e1fd96ae0",
@@ -60,7 +65,8 @@
     "format": "CSV",
     "url": "https://amnatcharoen.gdcatalog.go.th/dataset/09e16005-7328-47b3-9a15-124e1fd96ae0/resource/9bc3d697-c88e-4e1e-905f-616224f4d10f/download/-.csv",
     "description": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ ",
-    "last_modified": "2025-02-23T08:00:55.308240"
+    "last_modified": "2025-02-23T08:00:55.308240",
+    "ranking": 2
   },
   {
     "dataset_id": "75f31653-b50b-4406-a6cc-fc35b85c3e6b",
