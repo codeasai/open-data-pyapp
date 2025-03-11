@@ -38,7 +38,7 @@ ENV/
 .DS_Store
 
 # Project specific
-data/*.json
+data/*.sqlite
 *.csv
 data/*.csv
 !data/.gitkeep

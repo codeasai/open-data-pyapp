@@ -3,15 +3,18 @@ import requests
 import time
 import streamlit as st
 import pandas as pd
+from .db_utils import Database
+
+# สร้าง global database instance
+db = Database()
 
 def load_datasets():
-    """โหลดข้อมูล datasets"""
+    """โหลดข้อมูลชุดข้อมูล"""
     try:
-        with open('data/datasets_info.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
+        data = db.get_datasets()
         return pd.DataFrame(data)
     except Exception as e:
-        st.error(f"ไม่สามารถอ่านไฟล์ข้อมูลได้: {str(e)}")
+        st.error(f"ไม่สามารถอ่านข้อมูลได้: {str(e)}")
         return None
 
 def update_dataset(dataset_id):
@@ -38,12 +41,12 @@ def update_dataset(dataset_id):
         # ขั้นตอนที่ 2: อ่านข้อมูลเดิม
         progress_bar.progress(0.4, text="กำลังอ่านข้อมูลเดิม...")
         try:
-            with open('data/datasets_info.json', 'r', encoding='utf-8') as f:
+            with open('data/processed/datasets.json', 'r', encoding='utf-8') as f:
                 datasets = json.load(f)
             print("✅ อ่านข้อมูลเดิมสำเร็จ")
         except Exception as e:
             progress_bar.empty()
-            print(f"❌ ไม่สามารถอ่านไฟล์ datasets_info.json: {str(e)}")
+            print(f"❌ ไม่สามารถอ่านไฟล์ datasets.json: {str(e)}")
             return f"❌ ไม่สามารถอ่านข้อมูลเดิม: {str(e)}"
         
         # ขั้นตอนที่ 3: อัพเดทข้อมูล
@@ -74,7 +77,7 @@ def update_dataset(dataset_id):
                 
                 # บันทึกข้อมูลไฟล์
                 try:
-                    with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
+                    with open('data/processed/resources.json', 'r', encoding='utf-8') as f:
                         all_files = json.load(f)
                 except:
                     all_files = []
@@ -97,14 +100,14 @@ def update_dataset(dataset_id):
                 all_files.extend(dataset_files)
                 
                 # บันทึกข้อมูลไฟล์
-                with open('data/dataset_files.json', 'w', encoding='utf-8') as f:
+                with open('data/processed/resources.json', 'w', encoding='utf-8') as f:
                     json.dump(all_files, f, ensure_ascii=False, indent=2)
                 
                 break
         
         # ขั้นตอนที่ 4: บันทึกข้อมูล
         progress_bar.progress(0.8, text="กำลังบันทึกข้อมูล...")
-        with open('data/datasets_info.json', 'w', encoding='utf-8') as f:
+        with open('data/processed/datasets.json', 'w', encoding='utf-8') as f:
             json.dump(datasets, f, ensure_ascii=False, indent=2)
         
         # เสร็จสิ้น
@@ -129,34 +132,8 @@ def update_dataset(dataset_id):
 
 def update_dataset_ranking(dataset_id, ranking):
     """อัพเดท ranking ของ dataset"""
-    try:
-        # อ่านข้อมูลไฟล์
-        with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
-            all_files = json.load(f)
-        
-        # อัพเดท ranking สำหรับทุกไฟล์ในชุดข้อมูล
-        updated = False
-        for file in all_files:
-            if file['dataset_id'] == dataset_id:
-                file['ranking'] = ranking
-                updated = True
-        
-        if updated:
-            # บันทึกข้อมูลกลับ
-            with open('data/dataset_files.json', 'w', encoding='utf-8') as f:
-                json.dump(all_files, f, ensure_ascii=False, indent=2)
-            return True
-        return False
-    except Exception as e:
-        print(f"ไม่สามารถอัพเดท ranking: {str(e)}")
-        return False
+    return db.update_dataset_ranking(dataset_id, ranking)
 
 def get_dataset_files(dataset_id):
     """ดึงข้อมูลไฟล์ของ dataset"""
-    try:
-        with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
-            all_files = json.load(f)
-        return [f for f in all_files if f['dataset_id'] == dataset_id]
-    except Exception as e:
-        print(f"ไม่สามารถอ่านข้อมูลไฟล์: {str(e)}")
-        return [] 
+    return db.get_dataset_files(dataset_id) 
