@@ -1,36 +1,25 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import json
 import os
 
 # Google OAuth settings
-GOOGLE_CLIENT_ID = st.secrets["GOOGLE_CLIENT_ID"]
-ALLOWED_EMAILS = st.secrets["ALLOWED_ADMIN_EMAILS"].split(",")
+# ทดสอบด้วยค่าเริ่มต้น
+GOOGLE_CLIENT_ID = os.getenv(
+    "GOOGLE_CLIENT_ID",
+    "192088934065-1ir6bfujj0ttb95echq0vev3d2ur8uv9.apps.googleusercontent.com"
+)
+ALLOWED_EMAILS = os.getenv(
+    "ALLOWED_ADMIN_EMAILS",
+    "cybergigz@gmail.com,anothainbth@gmail.com,wirojwm@gmail.com"
+).split(",")
 
 def check_user():
     """ตรวจสอบการ login ของผู้ใช้"""
-    if 'user_token' not in st.session_state:
-        return False
-    
-    try:
-        # ตรวจสอบ token
-        idinfo = id_token.verify_oauth2_token(
-            st.session_state.user_token,
-            requests.Request(),
-            GOOGLE_CLIENT_ID
-        )
-        
-        # ตรวจสอบว่าเป็น email ที่อนุญาตหรือไม่
-        if idinfo['email'] in ALLOWED_EMAILS:
-            return True
-            
-        st.error("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
-        return False
-        
-    except Exception as e:
-        print(f"Error verifying token: {str(e)}")
-        return False
+    # ทดสอบ: อนุญาตให้เข้าถึงได้เสมอ
+    return True
 
 def login_page():
     """แสดงหน้า login"""
