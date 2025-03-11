@@ -59,22 +59,41 @@ def format_file_types(row):
         'WAV': {'color': '#6f42c1', 'icon': '🎵'}
     }
     
-    # ดึงข้อมูลไฟล์ของ dataset นี้
-    dataset_files = get_dataset_files(row['package_id'])
-    file_urls = {f['format'].upper(): f['url'] for f in dataset_files if f.get('format') and f.get('url')}
-    
-    # แยกประเภทไฟล์และสร้าง HTML
-    file_types = [t.strip().upper() for t in row['ประเภทไฟล์'].split(',')]
-    formatted_types = []
-    
-    for file_type in file_types:
-        style = file_type_styles.get(file_type, {'color': '#6c757d', 'icon': '📄'})
-        url = file_urls.get(file_type, '')
+    try:
+        # ดึงข้อมูลไฟล์ของ dataset นี้
+        dataset_files = get_dataset_files(row['package_id'])
+        file_urls = {f['format'].upper(): f['url'] for f in dataset_files if f.get('format') and f.get('url')}
         
-        if url:
-            formatted_types.append(
-                f"""<a href="{url}" target="_blank" style="text-decoration: none;">
-                    <span style="
+        # แยกประเภทไฟล์และสร้าง HTML
+        file_types = [t.strip().upper() for t in str(row['ประเภทไฟล์']).split(',')]
+        formatted_types = []
+        
+        for file_type in file_types:
+            if not file_type:  # ข้ามถ้าเป็นค่าว่าง
+                continue
+                
+            style = file_type_styles.get(file_type, {'color': '#6c757d', 'icon': '📄'})
+            url = file_urls.get(file_type, '')
+            
+            if url:
+                formatted_types.append(
+                    f"""<a href="{url}" target="_blank" style="text-decoration: none;">
+                        <span style="
+                            display: inline-block;
+                            padding: 2px 8px;
+                            margin: 2px;
+                            border-radius: 12px;
+                            background-color: {style['color']};
+                            color: white;
+                            font-size: 0.8em;
+                            white-space: nowrap;
+                            cursor: pointer;
+                        ">{style['icon']} {file_type}</span>
+                    </a>"""
+                )
+            else:
+                formatted_types.append(
+                    f"""<span style="
                         display: inline-block;
                         padding: 2px 8px;
                         margin: 2px;
@@ -83,22 +102,10 @@ def format_file_types(row):
                         color: white;
                         font-size: 0.8em;
                         white-space: nowrap;
-                        cursor: pointer;
-                    ">{style['icon']} {file_type}</span>
-                </a>"""
-            )
-        else:
-            formatted_types.append(
-                f"""<span style="
-                    display: inline-block;
-                    padding: 2px 8px;
-                    margin: 2px;
-                    border-radius: 12px;
-                    background-color: {style['color']};
-                    color: white;
-                    font-size: 0.8em;
-                    white-space: nowrap;
-                ">{style['icon']} {file_type}</span>"""
-            )
-    
-    return ' '.join(formatted_types) 
+                    ">{style['icon']} {file_type}</span>"""
+                )
+        
+        return ' '.join(formatted_types)
+    except Exception as e:
+        print(f"Error in format_file_types: {str(e)}")
+        return ""  # คืนค่าว่างถ้าเกิดข้อผิดพลาด 
