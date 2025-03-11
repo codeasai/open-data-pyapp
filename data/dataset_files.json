@@ -1,0 +1,151 @@
+[
+  {
+    "dataset_id": "85a4231e-0169-4874-aff9-5a6e0d56ca99",
+    "dataset_name": "สัดส่วนคนจน เมื่อวัดด้านรายจ่ายเพื่อการอุปโภคบริโภค",
+    "file_name": "สัดส่วนคนจน เมื่อวัดด้านรายจ่ายเพื่อการอุปโภคบริโภค",
+    "format": "CSV",
+    "url": "https://satun.gdcatalog.go.th/dataset/85a4231e-0169-4874-aff9-5a6e0d56ca99/resource/6a0d5bd4-3722-486c-b8b4-43f605635961/download/6a0d5bd4-3722-486c-b8b4-43f605635961.csv",
+    "description": "สัดส่วนคนจน หมายถึง ร้อยละของประชากรที่มีรายจ่ายเพื่อการอุปโภคบริโภคเฉลี่ยต่อคนต่อเดือน ต่ำกว่าเส้นความยากจน",
+    "last_modified": "2025-02-11T10:12:04.031333"
+  },
+  {
+    "dataset_id": "85a4231e-0169-4874-aff9-5a6e0d56ca99",
+    "dataset_name": "สัดส่วนคนจน เมื่อวัดด้านรายจ่ายเพื่อการอุปโภคบริโภค",
+    "file_name": "สัดส่วนคนจน เมื่อวัดด้านรายจ่ายเพื่อการอุปโภคบริโภค จังหวัดสตูล",
+    "format": "CSV",
+    "url": "https://satun.gdcatalog.go.th/dataset/85a4231e-0169-4874-aff9-5a6e0d56ca99/resource/90c62461-42c0-4501-8d89-03faf1a8e303/download/90c62461-42c0-4501-8d89-03faf1a8e303.csv",
+    "description": "สัดส่วนคนจน หมายถึง ร้อยละของประชากรที่มีรายจ่ายเพื่อการอุปโภคบริโภคเฉลี่ยต่อคนต่อเดือน ต่ำกว่าเส้นความยากจน",
+    "last_modified": "2025-02-11T10:14:22.464165"
+  },
+  {
+    "dataset_id": "52061f37-4135-4f53-a2ad-af6c8e95d103",
+    "dataset_name": "โครงการชลประทานขนาดเล็กจังหวัดลพบุรี",
+    "file_name": "โครงการชลประทานขนาดเล็กจังหวัดลพบุรี ",
+    "format": "XLSX",
+    "url": "https://lopburi.gdcatalog.go.th/dataset/52061f37-4135-4f53-a2ad-af6c8e95d103/resource/da789a94-ec55-4a1d-99e5-87526219816f/download/.xlsx",
+    "description": "โครงการชลประทานขนาดเล็กจังหวัดลพบุรี ตั้งแต่ต้นจนถึงปี 2561",
+    "last_modified": "2022-08-10T08:23:08.368763"
+  },
+  {
+    "dataset_id": "b66468bb-9716-442d-bd20-7afcfab95055",
+    "dataset_name": "จำนวนคณะกรรมการความปลอดภัยและอาชีวอนามัย",
+    "file_name": "จำนวนคณะกรรมการความปลอดภัยและอาชีวอนามัย",
+    "format": "PDF",
+    "url": "https://prachuapkhirikhan.gdcatalog.go.th/dataset/b66468bb-9716-442d-bd20-7afcfab95055/resource/86eeb04f-8c1e-45c9-9182-b0730fa6c27f/download/-.pdf",
+    "description": "",
+    "last_modified": "2024-08-26T02:39:50.516976"
+  },
+  {
+    "dataset_id": "e0b36bdf-99d5-4aa1-a068-716ad1d66975",
+    "dataset_name": "โครงการก่อสร้างโครงข่ายทางหลวง",
+    "file_name": "โครงการก่อสร้างโครงข่ายทางหลวง",
+    "format": "CSV",
+    "url": "https://mahasarakham.gdcatalog.go.th/dataset/e0b36bdf-99d5-4aa1-a068-716ad1d66975/resource/9ca2f57b-6789-4abd-ace8-dff5ddb930b5/download/-2565.csv",
+    "description": "",
+    "last_modified": "2024-04-01T05:15:21.803453"
+  },
+  {
+    "dataset_id": "09e16005-7328-47b3-9a15-124e1fd96ae0",
+    "dataset_name": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2565",
+    "file_name": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2565",
+    "format": "PDF",
+    "url": "https://amnatcharoen.gdcatalog.go.th/dataset/09e16005-7328-47b3-9a15-124e1fd96ae0/resource/ef27a4c0-3b98-4305-92e7-ed61f6503415/download/-65-5.2565-1.pdf",
+    "description": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2565",
+    "last_modified": "2023-04-06T04:57:31.205087"
+  },
+  {
+    "dataset_id": "09e16005-7328-47b3-9a15-124e1fd96ae0",
+    "dataset_name": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2565",
+    "file_name": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ 2567",
+    "format": "CSV",
+    "url": "https://amnatcharoen.gdcatalog.go.th/dataset/09e16005-7328-47b3-9a15-124e1fd96ae0/resource/9bc3d697-c88e-4e1e-905f-616224f4d10f/download/-.csv",
+    "description": "จำนวนแรงงานที่ได้รับการฝึกอบรมหลักสูตรการฝึกอาชีพเสริม ประจำปีงบประมาณ ",
+    "last_modified": "2025-02-23T08:00:55.308240"
+  },
+  {
+    "dataset_id": "75f31653-b50b-4406-a6cc-fc35b85c3e6b",
+    "dataset_name": "จำนวนการพัฒนาที่อยู่อาศัยของการเคหะแห่งชาติ",
+    "file_name": "จำนวนการพัฒนาที่อยู่อาศัยของการเคหะแห่งชาติ",
+    "format": "XLSX",
+    "url": "https://gdcatalog.nha.co.th/dataset/75f31653-b50b-4406-a6cc-fc35b85c3e6b/resource/e597b864-c17d-4ac3-935a-7b3258e1879d/download/housing_dev_2564.xlsx",
+    "description": "จำนวนการพัฒนาที่อยู่อาศัยของเคหะ ณ กันยายน 2564",
+    "last_modified": "2022-07-01T07:08:39.006865"
+  },
+  {
+    "dataset_id": "4419aed4-9007-4796-8837-b911ba3362c1",
+    "dataset_name": "จำนวนด่านการค้าหรือจุดผ่อนปรนบริเวณแนวพรมแดน",
+    "file_name": "จำนวนด่านการค้าหรือจุดผ่อนปรนบริเวณแนวพรมแดน",
+    "format": "CSV",
+    "url": "https://prachuapkhirikhan.gdcatalog.go.th/dataset/4419aed4-9007-4796-8837-b911ba3362c1/resource/878a7ff6-4c05-468a-9d3a-27979479d8a2/download/.csv",
+    "description": "ด่านพรมแดนเป็นด่านสาขาของด่านศุลกากรทางบกสำหรับตรวจทางบก",
+    "last_modified": "2024-07-19T04:36:40.153722"
+  },
+  {
+    "dataset_id": "e16d9621-3b26-4361-8ae4-17883eca4dab",
+    "dataset_name": "แบบฟอร์มสถานะความก้าวหน้าโครงการระบบราง",
+    "file_name": "Data Dictionary โครงการระบบราง (รถไฟระหว่างเมือง)",
+    "format": "CSV",
+    "url": "https://drt.gdcatalog.go.th/dataset/e16d9621-3b26-4361-8ae4-17883eca4dab/resource/fb4e0c22-7437-44c1-ba99-a99073ad1656/download/datadict_ds_12_05_01.csv",
+    "description": "พจนานุกรมข้อมูล ซึ่งแสดงรายละเอียดต่าง ๆ ในฐานข้อมูล",
+    "last_modified": "2024-04-03T09:28:39.678081"
+  },
+  {
+    "dataset_id": "e16d9621-3b26-4361-8ae4-17883eca4dab",
+    "dataset_name": "แบบฟอร์มสถานะความก้าวหน้าโครงการระบบราง",
+    "file_name": "แบบฟอร์มรายงานสถานะความก้าวหน้าโครงการระบบราง (รถไฟระหว่างเมืือง)",
+    "format": "PDF",
+    "url": "https://drt.gdcatalog.go.th/dataset/e16d9621-3b26-4361-8ae4-17883eca4dab/resource/8cca9bde-188a-4600-aadf-aee4bc2abb59/download/ds_12_05_01.pdf",
+    "description": "แบบฟอร์มรายงานสถานะความก้าวหน้าโครงการระบบราง (รถไฟระหว่างเมืือง)",
+    "last_modified": "2024-03-27T07:51:06.047087"
+  },
+  {
+    "dataset_id": "e16d9621-3b26-4361-8ae4-17883eca4dab",
+    "dataset_name": "แบบฟอร์มสถานะความก้าวหน้าโครงการระบบราง",
+    "file_name": "Data Dictionary โครงการระบบราง (รถไฟฟ้าในเขตกรุงเทพมหานครและปริมณฑล)",
+    "format": "CSV",
+    "url": "https://drt.gdcatalog.go.th/dataset/e16d9621-3b26-4361-8ae4-17883eca4dab/resource/4aef1973-0af2-495c-ac8e-2ea2c545e42a/download/datadict_ds_12_05_02.csv",
+    "description": "พจนานุกรมข้อมูล ซึ่งแสดงรายละเอียดต่าง ๆ ในฐานข้อมูล",
+    "last_modified": "2024-04-03T09:29:19.693141"
+  },
+  {
+    "dataset_id": "e16d9621-3b26-4361-8ae4-17883eca4dab",
+    "dataset_name": "แบบฟอร์มสถานะความก้าวหน้าโครงการระบบราง",
+    "file_name": "แบบฟอร์มรายงานสถานะความก้าวหน้าโครงการระบบราง (รถไฟฟ้าในเขตกรุงเทพและปริมณฑล)",
+    "format": "PDF",
+    "url": "https://drt.gdcatalog.go.th/dataset/e16d9621-3b26-4361-8ae4-17883eca4dab/resource/3912640d-f654-436a-a630-3d2ef0c5b5fc/download/ds_12_05_02.pdf",
+    "description": "แบบฟอร์มรายงานสถานะความก้าวหน้าโครงการระบบราง (รถไฟฟ้าในเขตกรุงเทพและปริมณฑล)",
+    "last_modified": "2024-03-27T07:51:27.355376"
+  },
+  {
+    "dataset_id": "2f0a0ede-b188-499e-9752-c31ff51de8ae",
+    "dataset_name": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ 2565",
+    "file_name": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ 2565",
+    "format": "PDF",
+    "url": "https://amnatcharoen.gdcatalog.go.th/dataset/2f0a0ede-b188-499e-9752-c31ff51de8ae/resource/d78753e0-ec49-4c86-b94f-196c4e7b4100/download/-65-8.2565-2.pdf",
+    "description": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ 2565\r\n",
+    "last_modified": "2023-04-06T05:17:08.851833"
+  },
+  {
+    "dataset_id": "2f0a0ede-b188-499e-9752-c31ff51de8ae",
+    "dataset_name": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ 2565",
+    "file_name": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ 2567",
+    "format": "CSV",
+    "url": "https://amnatcharoen.gdcatalog.go.th/dataset/2f0a0ede-b188-499e-9752-c31ff51de8ae/resource/df9b2080-31e7-4379-9af1-36a86cd30f9e/download/-.csv",
+    "description": "จำนวนแรงงานที่ผ่านการทดสอบมาตรฐานฝีมือแรงงานแห่งชาติ ประจำปีงบประมาณ",
+    "last_modified": "2025-02-23T07:56:41.030697"
+  },
+  {
+    "dataset_id": "433c80cc-de7c-4289-98f7-896387afb3ec",
+    "file_name": "มูลค่าการนำเข้าการค้าชายแดน",
+    "format": "XLSX",
+    "url": "https://prachuapkhirikhan.gdcatalog.go.th/dataset/433c80cc-de7c-4289-98f7-896387afb3ec/resource/2e1f74d9-6908-4602-90a2-2c2caf3d01b8/download/.xlsx",
+    "description": "สินค้าที่นำเข้ามาจากต่างประเทศ คือ การนำเข้าสินค้าเข้ามาจากต่างประเทศ โดยสินค้าที่นำเข้ามักเป็นสินค้าที่ไม่มีหรือผลิตในประเทศไม่ได้ เช่น ยารักษาโรค เครื่องจักรต่างๆที่ใช้ในอุตสาหกรรมการผลิต สินค้าเกษตรบางชนิด เป็นต้น"
+  },
+  {
+    "dataset_id": "433c80cc-de7c-4289-98f7-896387afb3ec",
+    "file_name": "มูลค่าการนำเข้าการค้าชายแดน",
+    "format": "CSV",
+    "url": "https://prachuapkhirikhan.gdcatalog.go.th/dataset/433c80cc-de7c-4289-98f7-896387afb3ec/resource/3ad9119e-442c-4e79-8226-ac0f305d7560/download/.csv",
+    "description": "สินค้าที่นำเข้ามาจากต่างประเทศ คือ การนำเข้าสินค้าเข้ามาจากต่างประเทศ โดยสินค้าที่นำเข้ามักเป็นสินค้าที่ไม่มีหรือผลิตในประเทศไม่ได้ เช่น ยารักษาโรค เครื่องจักรต่างๆที่ใช้ในอุตสาหกรรมการผลิต สินค้าเกษตรบางชนิด เป็นต้น"
+  }
+]
