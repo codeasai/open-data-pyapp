@@ -1,5 +1,6 @@
 import json
 import streamlit as st
+from utils.data_utils import get_dataset_files
 
 def get_file_type_icon(file_type):
     """แปลงประเภทไฟล์เป็นไอคอน"""
@@ -19,42 +20,85 @@ def get_file_type_icon(file_type):
     return icon_map.get(file_type.upper(), '📎')
 
 def format_file_types(row):
-    """แปลงประเภทไฟล์เป็นไอคอนและลิงก์"""
-    file_types_str = row['ประเภทไฟล์']
-    dataset_id = row['package_id']
+    """จัดรูปแบบการแสดงผลประเภทไฟล์"""
+    if not row.get('ประเภทไฟล์'):
+        return ""
     
-    if not file_types_str:
-        return ''
+    # กำหนดสีและไอคอนสำหรับแต่ละประเภทไฟล์
+    file_type_styles = {
+        'CSV': {'color': '#28a745', 'icon': '📊'},
+        'JSON': {'color': '#ffc107', 'icon': '📝'},
+        'XML': {'color': '#17a2b8', 'icon': '📋'},
+        'XLS': {'color': '#28a745', 'icon': '📗'},
+        'XLSX': {'color': '#28a745', 'icon': '📗'},
+        'PDF': {'color': '#dc3545', 'icon': '📕'},
+        'DOC': {'color': '#007bff', 'icon': '📘'},
+        'DOCX': {'color': '#007bff', 'icon': '📘'},
+        'ZIP': {'color': '#6c757d', 'icon': '📦'},
+        'RAR': {'color': '#6c757d', 'icon': '📦'},
+        'TXT': {'color': '#6c757d', 'icon': '📄'},
+        'HTML': {'color': '#e83e8c', 'icon': '🌐'},
+        'KML': {'color': '#20c997', 'icon': '🗺️'},
+        'KMZ': {'color': '#20c997', 'icon': '🗺️'},
+        'SHP': {'color': '#6f42c1', 'icon': '🗺️'},
+        'GDB': {'color': '#6f42c1', 'icon': '🗺️'},
+        'GEOJSON': {'color': '#20c997', 'icon': '🗺️'},
+        'SQL': {'color': '#fd7e14', 'icon': '💾'},
+        'MDB': {'color': '#fd7e14', 'icon': '💾'},
+        'ACCDB': {'color': '#fd7e14', 'icon': '💾'},
+        'ODS': {'color': '#28a745', 'icon': '📊'},
+        'ODB': {'color': '#fd7e14', 'icon': '💾'},
+        'ODT': {'color': '#007bff', 'icon': '📘'},
+        'JPG': {'color': '#e83e8c', 'icon': '🖼️'},
+        'JPEG': {'color': '#e83e8c', 'icon': '🖼️'},
+        'PNG': {'color': '#e83e8c', 'icon': '🖼️'},
+        'GIF': {'color': '#e83e8c', 'icon': '🖼️'},
+        'SVG': {'color': '#e83e8c', 'icon': '🖼️'},
+        'MP4': {'color': '#6f42c1', 'icon': '🎥'},
+        'MP3': {'color': '#6f42c1', 'icon': '🎵'},
+        'WAV': {'color': '#6f42c1', 'icon': '🎵'}
+    }
     
-    try:
-        with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
-            all_files = json.load(f)
+    # ดึงข้อมูลไฟล์ของ dataset นี้
+    dataset_files = get_dataset_files(row['package_id'])
+    file_urls = {f['format'].upper(): f['url'] for f in dataset_files if f.get('format') and f.get('url')}
+    
+    # แยกประเภทไฟล์และสร้าง HTML
+    file_types = [t.strip().upper() for t in row['ประเภทไฟล์'].split(',')]
+    formatted_types = []
+    
+    for file_type in file_types:
+        style = file_type_styles.get(file_type, {'color': '#6c757d', 'icon': '📄'})
+        url = file_urls.get(file_type, '')
         
-        dataset_files = [f for f in all_files if f['dataset_id'] == dataset_id]
-        
-        file_links = []
-        for file in dataset_files:
-            file_type = file.get('format', '').strip().upper()
-            if file_type:
-                icon = get_file_type_icon(file_type)
-                url = file.get('url', '')
-                name = file.get('file_name', '')
-                
-                if url:
-                    link = f'''
-                        <a href="{url}" target="_blank" alt="{name}" title="{name}">
-                            <span class="file-type">
-                                {icon}
-                                <span class="format-text">{file_type}</span>
-                            </span>
-                        </a>
-                    '''
-                    file_links.append(link)
-                else:
-                    file_links.append(f'<span class="file-type">{icon} {file_type}</span>')
-        
-        return ' '.join(file_links) if file_links else file_types_str
-        
-    except Exception as e:
-        print(f"ไม่สามารถอ่านข้อมูลไฟล์: {str(e)}")
-        return file_types_str 
+        if url:
+            formatted_types.append(
+                f"""<a href="{url}" target="_blank" style="text-decoration: none;">
+                    <span style="
+                        display: inline-block;
+                        padding: 2px 8px;
+                        margin: 2px;
+                        border-radius: 12px;
+                        background-color: {style['color']};
+                        color: white;
+                        font-size: 0.8em;
+                        white-space: nowrap;
+                        cursor: pointer;
+                    ">{style['icon']} {file_type}</span>
+                </a>"""
+            )
+        else:
+            formatted_types.append(
+                f"""<span style="
+                    display: inline-block;
+                    padding: 2px 8px;
+                    margin: 2px;
+                    border-radius: 12px;
+                    background-color: {style['color']};
+                    color: white;
+                    font-size: 0.8em;
+                    white-space: nowrap;
+                ">{style['icon']} {file_type}</span>"""
+            )
+    
+    return ' '.join(formatted_types) 

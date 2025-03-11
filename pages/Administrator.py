@@ -2,14 +2,18 @@ import streamlit as st
 import pandas as pd
 from utils.data_utils import db, update_dataset
 from utils.auth import check_user, login_page
+from utils.ui_utils import toggle_theme
 import os
 
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
-    page_title="Administrator - ข้อมูลเปิดภาครัฐ",
+    page_title="ผู้ดูแลระบบ | ข้อมูลเปิดภาครัฐ",
     page_icon="⚙️",
     layout="wide"
 )
+
+# แสดงปุ่มสลับ theme
+toggle_theme()
 
 # ตรวจสอบการ login
 if not check_user():

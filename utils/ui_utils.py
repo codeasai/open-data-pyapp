@@ -98,4 +98,82 @@ def create_ranking_selector(row):
             time.sleep(1)
             st.rerun()
         else:
-            st.toast("❌ ไม่สามารถอัพเดท ranking ได้") 
+            st.toast("❌ ไม่สามารถอัพเดท ranking ได้")
+
+def toggle_theme():
+    """สลับ theme ระหว่าง light และ dark"""
+    # ตรวจสอบ theme ปัจจุบัน
+    current_theme = 'light' if 'theme' not in st.session_state else st.session_state.theme
+    
+    # สร้างปุ่มสลับ theme
+    if current_theme == 'light':
+        theme_icon = "🌙"
+        theme_tooltip = "Switch to Dark Mode"
+    else:
+        theme_icon = "☀️"
+        theme_tooltip = "Switch to Light Mode"
+    
+    # วาง theme switcher ที่มุมขวาบน
+    with st.container():
+        st.markdown(
+            f"""
+            <div style="position: fixed; top: 0.5rem; right: 0.5rem; z-index: 1000;">
+                <button 
+                    onclick="switchTheme()" 
+                    style="
+                        background: none;
+                        border: none;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        padding: 0.5rem;
+                        border-radius: 50%;
+                        transition: background-color 0.3s;
+                        position: relative;
+                        z-index: 99999;
+                    "
+                    title="{theme_tooltip}"
+                >
+                    {theme_icon}
+                </button>
+            </div>
+            
+            <script>
+                function switchTheme() {{
+                    const currentTheme = localStorage.getItem('theme') || 'light';
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    
+                    // บันทึก theme ใหม่
+                    localStorage.setItem('theme', newTheme);
+                    
+                    // อัพเดท CSS variables
+                    document.body.classList.remove(currentTheme + '-theme');
+                    document.body.classList.add(newTheme + '-theme');
+                    
+                    // แจ้ง Streamlit
+                    window.parent.postMessage({{
+                        type: 'streamlit:setSessionState',
+                        key: 'theme',
+                        value: newTheme
+                    }}, '*');
+                    
+                    // รีโหลดหน้าเว็บ
+                    window.location.reload();
+                }}
+                
+                // ตั้งค่า theme เริ่มต้น
+                document.addEventListener('DOMContentLoaded', function() {{
+                    const theme = localStorage.getItem('theme') || 'light';
+                    document.body.classList.add(theme + '-theme');
+                }});
+                
+                // แก้ไขปัญหาปุ่มถูกซ่อน
+                window.addEventListener('load', function() {{
+                    const button = document.querySelector('button[onclick="switchTheme()"]');
+                    if (button) {{
+                        button.style.visibility = 'visible';
+                    }}
+                }});
+            </script>
+            """,
+            unsafe_allow_html=True
+        ) 

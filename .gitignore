@@ -30,6 +30,7 @@ ENV/
 # Streamlit
 .streamlit/
 !.streamlit/config.toml
+.streamlit/secrets.toml
 
 # IDE
 .idea/
@@ -37,6 +38,7 @@ ENV/
 *.swp
 *.swo
 .DS_Store
+Thumbs.db
 
 # Project specific
 data/*.sqlite
@@ -47,4 +49,12 @@ data/*.csv
 # Logs
 *.log
 .coverage
-htmlcov/ 
+htmlcov/
+
+# Database
+*.sqlite
+*.db
+
+# System files
+.DS_Store
+Thumbs.db 
