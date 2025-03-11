@@ -4,29 +4,62 @@ import time
 import streamlit as st
 import pandas as pd
 from .db_utils import Database
+import os
 
 # สร้าง global database instance
 db = Database()
 
+def init_database():
+    """เตรียมข้อมูลเริ่มต้นถ้ายังไม่มี"""
+    # ตรวจสอบว่ามีไฟล์ database หรือไม่
+    if not os.path.exists('data/database.sqlite'):
+        print("🔄 กำลังเตรียมฐานข้อมูล...")
+        
+        # สร้างข้อมูลเริ่มต้น
+        sample_data = {
+            'datasets': [{
+                'package_id': 'sample',
+                'title': 'ตัวอย่างชุดข้อมูล',
+                'organization': 'หน่วยงานตัวอย่าง',
+                'url': 'https://data.go.th',
+                'resource_count': 1,
+                'file_types': 'CSV',
+                'last_updated': '2024-03-19'
+            }],
+            'resources': [{
+                'dataset_id': 'sample',
+                'file_name': 'sample.csv',
+                'format': 'CSV',
+                'url': 'https://data.go.th',
+                'description': 'ไฟล์ตัวอย่าง',
+                'ranking': 4
+            }]
+        }
+        
+        # บันทึกข้อมูลลง database
+        db.init_sample_data(sample_data)
+        print("✅ เตรียมฐานข้อมูลเสร็จสิ้น")
+
 def load_datasets():
     """โหลดข้อมูลชุดข้อมูล"""
+    # เตรียมข้อมูลเริ่มต้นถ้ายังไม่มี
+    init_database()
+    
     try:
         data = db.get_datasets()
         # แปลงข้อมูลเป็น DataFrame และเปลี่ยนชื่อคอลัมน์
         df = pd.DataFrame(data)
-        column_mapping = {
-            'title': 'title',
-            'organization': 'organization',
-            'resource_count': 'resource_count',
-            'file_types': 'file_types',
-            'last_updated': 'last_updated',
-            'package_id': 'package_id',
-            'url': 'url'
-        }
-        # เปลี่ยนชื่อคอลัมน์ถ้ามี
-        df = df.rename(columns=column_mapping)
+        # ตรวจสอบคอลัมน์ที่มีอยู่
+        print("Columns in DataFrame:", df.columns.tolist())
+        
+        # ตรวจสอบข้อมูลตัวอย่าง
+        print("\nSample data:")
+        print(df.head())
+        
+        # ไม่ต้องเปลี่ยนชื่อคอลัมน์เพราะชื่อตรงกับที่กำหนดใน SQL แล้ว
         return df
     except Exception as e:
+        print(f"Error loading datasets: {str(e)}")
         st.error(f"ไม่สามารถอ่านข้อมูลได้: {str(e)}")
         return None
 

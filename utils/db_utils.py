@@ -193,4 +193,44 @@ class Database:
             return True
         except Exception as e:
             print(f"Error updating dataset: {str(e)}")
+            return False
+    
+    def init_sample_data(self, data):
+        """เพิ่มข้อมูลตัวอย่าง"""
+        try:
+            # เพิ่มข้อมูล datasets
+            for dataset in data['datasets']:
+                self.conn.execute("""
+                    INSERT OR REPLACE INTO datasets 
+                    (package_id, title, organization, url, resource_count, file_types, last_updated)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    dataset['package_id'],
+                    dataset['title'],
+                    dataset['organization'],
+                    dataset['url'],
+                    dataset['resource_count'],
+                    dataset['file_types'],
+                    dataset['last_updated']
+                ))
+            
+            # เพิ่มข้อมูล resources
+            for resource in data['resources']:
+                self.conn.execute("""
+                    INSERT OR REPLACE INTO resources 
+                    (dataset_id, file_name, format, url, description, ranking)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    resource['dataset_id'],
+                    resource['file_name'],
+                    resource['format'],
+                    resource['url'],
+                    resource['description'],
+                    resource['ranking']
+                ))
+            
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error initializing sample data: {str(e)}")
             return False 

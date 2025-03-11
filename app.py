@@ -16,6 +16,11 @@ df = load_datasets()
 if df is None:
     st.stop()
 
+# ตรวจสอบว่ามีข้อมูลหรือไม่
+if len(df) == 0:
+    st.warning("ไม่พบข้อมูลในฐานข้อมูล กรุณารันคำสั่ง `python migrate_data.py` เพื่อนำเข้าข้อมูล")
+    st.stop()
+
 # ใส่ CSS
 apply_custom_css()
 
@@ -28,7 +33,11 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("จำนวนชุดข้อมูลคุณภาพสูง", len(df))
 with col2:
-    st.metric("จำนวนหน่วยงาน", df['organization'].nunique())
+    # ตรวจสอบคอลัมน์ก่อนใช้งาน
+    if 'organization' in df.columns:
+        st.metric("จำนวนหน่วยงาน", df['organization'].nunique())
+    else:
+        st.error("ไม่พบคอลัมน์ 'organization' ในข้อมูล")
 with col3:
     total_resources = df['resource_count'].sum()
     st.metric("จำนวนทรัพยากรทั้งหมด", total_resources)
