@@ -233,4 +233,15 @@ class Database:
             return True
         except Exception as e:
             print(f"Error initializing sample data: {str(e)}")
+            return False
+    
+    def clear_database(self):
+        """ล้างข้อมูลทั้งหมดในฐานข้อมูล"""
+        try:
+            self.conn.execute("DELETE FROM resources")
+            self.conn.execute("DELETE FROM datasets")
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error clearing database: {str(e)}")
             return False 
