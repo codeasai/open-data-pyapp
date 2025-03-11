@@ -97,19 +97,38 @@ def main(silent=False):
     """
     db = Database()
     db_exists = check_database()
+    json_files = {
+        'datasets': 'data/datasets_info.json',
+        'resources': 'data/dataset_files.json'
+    }
+    has_json = all(os.path.exists(path) for path in json_files.values())
     
     if not silent:
         print(f"🗄️ ฐานข้อมูล SQLite: {'✅ พร้อมใช้งาน' if db_exists else '❌ ไม่พบไฟล์'}")
+        print(f"📄 ไฟล์ JSON: {'✅ พร้อมใช้งาน' if has_json else '❌ ไม่พบไฟล์'}")
     
     try:
-        # ตรวจสอบข้อมูลที่มีอยู่
+        # 1. ถ้ามี SQLite และมีข้อมูล ใช้ข้อมูลจาก SQLite
         if db_exists:
             datasets = db.get_datasets()
             if datasets:
                 df = pd.DataFrame(datasets)
-                return True, "✅ โหลดข้อมูลสำเร็จ", df
+                return True, "✅ โหลดข้อมูลจาก SQLite สำเร็จ", df
         
-        # ถ้าไม่มีข้อมูล สร้างข้อมูลตัวอย่าง
+        # 2. ถ้ามีไฟล์ JSON ให้ migrate ข้อมูล
+        if has_json:
+            if not silent:
+                print("🔄 กำลัง migrate ข้อมูลจาก JSON...")
+            if db.migrate_from_json():
+                datasets = db.get_datasets()
+                if datasets:
+                    df = pd.DataFrame(datasets)
+                    return True, "✅ Migrate ข้อมูลจาก JSON สำเร็จ", df
+        
+        # 3. ถ้าไม่มีทั้ง SQLite และ JSON ให้สร้างข้อมูลตัวอย่าง
+        if not silent:
+            print("⚠️ ไม่พบข้อมูลใน SQLite และ JSON")
+            print("🔄 กำลังสร้างข้อมูลตัวอย่าง...")
         return create_sample_data(db)
 
     except Exception as e:
