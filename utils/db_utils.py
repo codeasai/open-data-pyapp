@@ -1,17 +1,25 @@
 import sqlite3
 import json
 from pathlib import Path
+import threading
 
 class Database:
     def __init__(self):
         # สร้างโฟลเดอร์ data ถ้ายังไม่มี
         Path("data").mkdir(exist_ok=True)
-        self.conn = sqlite3.connect('data/database.sqlite')
-        self.create_tables()
+        self._local = threading.local()
+        self._create_tables()
     
-    def create_tables(self):
+    @property
+    def conn(self):
+        if not hasattr(self._local, 'conn'):
+            self._local.conn = sqlite3.connect('data/database.sqlite')
+        return self._local.conn
+    
+    def _create_tables(self):
         """สร้างตารางในฐานข้อมูล"""
-        self.conn.execute("""
+        conn = sqlite3.connect('data/database.sqlite')
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS datasets (
                 package_id TEXT PRIMARY KEY,
                 title TEXT,
@@ -23,7 +31,7 @@ class Database:
             )
         """)
         
-        self.conn.execute("""
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS resources (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 dataset_id TEXT,
@@ -35,13 +43,25 @@ class Database:
                 FOREIGN KEY (dataset_id) REFERENCES datasets(package_id)
             )
         """)
-        self.conn.commit()
+        conn.commit()
+        conn.close()
     
     def migrate_from_json(self):
         """ย้ายข้อมูลจาก JSON เข้า SQLite"""
         try:
+            # ตรวจสอบว่ามีไฟล์ JSON หรือไม่
+            json_files = {
+                'datasets': 'data/datasets_info.json',
+                'resources': 'data/dataset_files.json'
+            }
+
+            for name, path in json_files.items():
+                if not Path(path).exists():
+                    print(f"❌ ไม่พบไฟล์ {path}")
+                    return False
+
             # ย้ายข้อมูล datasets
-            with open('data/processed/datasets.json', 'r', encoding='utf-8') as f:
+            with open('data/datasets_info.json', 'r', encoding='utf-8') as f:
                 datasets = json.load(f)
                 for dataset in datasets:
                     self.conn.execute("""
@@ -59,13 +79,11 @@ class Database:
                     ))
             
             # ย้ายข้อมูล resources และ rankings
-            with open('data/processed/resources.json', 'r', encoding='utf-8') as f:
+            with open('data/dataset_files.json', 'r', encoding='utf-8') as f:
                 resources = json.load(f)
-            with open('data/processed/rankings.json', 'r', encoding='utf-8') as f:
-                rankings = json.load(f)
-                
+            
             for resource in resources:
-                ranking = rankings.get(resource['dataset_id'], 0)
+                ranking = resource.get('ranking', 0)  # ใช้ ranking จาก resource โดยตรง
                 self.conn.execute("""
                     INSERT OR REPLACE INTO resources 
                     (dataset_id, file_name, format, url, description, ranking)
