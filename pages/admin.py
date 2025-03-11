@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils.data_utils import db, update_dataset
+from utils.auth import check_user, login_page
 import os
 
 # ตั้งค่าหน้าเว็บ
@@ -9,6 +10,11 @@ st.set_page_config(
     page_icon="⚙️",
     layout="wide"
 )
+
+# ตรวจสอบการ login
+if not check_user():
+    login_page()
+    st.stop()
 
 # หัวข้อหลัก
 st.title("⚙️ Administrator")

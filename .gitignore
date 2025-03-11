@@ -29,6 +29,7 @@ ENV/
 
 # Streamlit
 .streamlit/
+!.streamlit/config.toml
 
 # IDE
 .idea/
