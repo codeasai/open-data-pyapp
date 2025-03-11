@@ -83,9 +83,10 @@ def create_ranking_selector(row):
     
     # สร้าง dropdown
     selected = st.selectbox(
-        "Ranking",
+        "⭐",
         options=list(ranking_options.keys()),
         index=list(ranking_options.keys()).index(current_option),
+        label_visibility="collapsed",
         key=f"rank_{row['package_id']}"
     )
     
