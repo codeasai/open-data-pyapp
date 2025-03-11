@@ -18,18 +18,65 @@ def create_sample_data(db):
 
         # สร้างข้อมูลตัวอย่าง
         sample_data = {
-            'title': ['ชุดข้อมูลตัวอย่าง 1', 'ชุดข้อมูลตัวอย่าง 2'],
-            'organization': ['หน่วยงาน A', 'หน่วยงาน B'],
-            'resource_count': [2, 3],
-            'file_types': ['CSV, JSON', 'PDF, XLSX'],
-            'last_updated': ['2024-03-20', '2024-03-21'],
-            'package_id': ['sample-1', 'sample-2'],
-            'url': ['https://example.com/1', 'https://example.com/2']
+            'datasets': [
+                {
+                    'title': 'ชุดข้อมูลตัวอย่าง 1',
+                    'organization': 'หน่วยงาน A',
+                    'resource_count': 2,
+                    'file_types': 'CSV, JSON',
+                    'last_updated': '2024-03-20',
+                    'package_id': 'sample-1',
+                    'url': 'https://example.com/1'
+                },
+                {
+                    'title': 'ชุดข้อมูลตัวอย่าง 2',
+                    'organization': 'หน่วยงาน B',
+                    'resource_count': 3,
+                    'file_types': 'PDF, XLSX',
+                    'last_updated': '2024-03-21',
+                    'package_id': 'sample-2',
+                    'url': 'https://example.com/2'
+                }
+            ],
+            'resources': [
+                {
+                    'dataset_id': 'sample-1',
+                    'file_name': 'data1.csv',
+                    'format': 'CSV',
+                    'url': 'https://example.com/1/csv',
+                    'description': 'ข้อมูล CSV',
+                    'ranking': 4
+                },
+                {
+                    'dataset_id': 'sample-1',
+                    'file_name': 'data1.json',
+                    'format': 'JSON',
+                    'url': 'https://example.com/1/json',
+                    'description': 'ข้อมูล JSON',
+                    'ranking': 4
+                },
+                {
+                    'dataset_id': 'sample-2',
+                    'file_name': 'data2.pdf',
+                    'format': 'PDF',
+                    'url': 'https://example.com/2/pdf',
+                    'description': 'ข้อมูล PDF',
+                    'ranking': 4
+                },
+                {
+                    'dataset_id': 'sample-2',
+                    'file_name': 'data2.xlsx',
+                    'format': 'XLSX',
+                    'url': 'https://example.com/2/xlsx',
+                    'description': 'ข้อมูล XLSX',
+                    'ranking': 4
+                }
+            ]
         }
-        df = pd.DataFrame(sample_data)
         
-        # สร้างตารางและบันทึกข้อมูล
-        if db.create_tables() and db.init_sample_data(df.to_dict('records')):
+        # บันทึกข้อมูลตัวอย่าง
+        if db.init_sample_data(sample_data):
+            df = pd.DataFrame(sample_data['datasets'])
             return True, "✅ สร้างข้อมูลตัวอย่างสำเร็จ", df
         return False, "❌ ไม่สามารถสร้างข้อมูลตัวอย่างได้", None
     except Exception as e:
