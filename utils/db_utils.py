@@ -244,4 +244,22 @@ class Database:
             return True
         except Exception as e:
             print(f"Error clearing database: {str(e)}")
-            return False 
+            return False
+    
+    def get_dataset_rankings(self, package_ids):
+        """ดึง ranking สูงสุดของหลาย datasets พร้อมกัน"""
+        try:
+            # สร้าง placeholders สำหรับ IN clause
+            placeholders = ','.join('?' * len(package_ids))
+            cursor = self.conn.execute(f"""
+                SELECT dataset_id, MAX(ranking) as max_ranking
+                FROM resources
+                WHERE dataset_id IN ({placeholders})
+                GROUP BY dataset_id
+            """, package_ids)
+            
+            # สร้าง dictionary ของ package_id -> ranking
+            return {row[0]: row[1] for row in cursor.fetchall()}
+        except Exception as e:
+            print(f"Error getting dataset rankings: {str(e)}")
+            return {} 

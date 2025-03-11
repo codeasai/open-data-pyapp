@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils.data_utils import get_dataset_files
+from utils.data_utils import get_dataset_files, get_dataset_rankings
 from utils.file_utils import format_file_types
 from utils.ui_utils import create_action_cell, apply_custom_css, create_ranking_selector, toggle_theme
 from migrate_data import main as migrate_main
@@ -31,7 +31,12 @@ def get_dataset_ranking(package_id):
 def filter_by_ranking(df, ranking_value):
     """กรองข้อมูลตาม ranking"""
     filtered = df.copy()
-    rankings = {pid: get_dataset_ranking(pid) for pid in filtered['package_id']}
+    
+    # ดึง rankings ทั้งหมดในครั้งเดียว
+    package_ids = filtered['package_id'].tolist()
+    rankings = get_dataset_rankings(package_ids)
+    
+    # กรองข้อมูลตาม ranking
     filtered['max_ranking'] = filtered['package_id'].map(rankings)
     result = filtered[filtered['max_ranking'] == ranking_value].drop('max_ranking', axis=1)
     return result
