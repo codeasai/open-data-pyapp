@@ -4,6 +4,7 @@ from utils.data_utils import db, update_dataset
 from utils.auth import check_user, login_page
 from utils.ui_utils import toggle_theme
 import os
+import json
 
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
@@ -26,14 +27,53 @@ st.markdown("---")
 
 # แสดงสถานะฐานข้อมูล
 st.subheader("📊 สถานะฐานข้อมูล")
+
+# เพิ่มการเปรียบเทียบจำนวนข้อมูล
+st.write("#### 🔄 เปรียบเทียบจำนวนข้อมูล")
+
+# สร้างตารางเปรียบเทียบ
+comparison_data = {
+    'แหล่งข้อมูล': ['JSON', 'SQLite'],
+    'ชุดข้อมูล': [0, 0],
+    'ทรัพยากร': [0, 0]
+}
+
+# นับจำนวนข้อมูลจาก JSON
+json_files = {
+    'datasets': 'data/datasets_info.json',
+    'resources': 'data/dataset_files.json'
+}
+
+if all(os.path.exists(path) for path in json_files.values()):
+    try:
+        with open(json_files['datasets'], 'r', encoding='utf-8') as f:
+            datasets = json.load(f)
+            comparison_data['ชุดข้อมูล'][0] = len(datasets)
+        with open(json_files['resources'], 'r', encoding='utf-8') as f:
+            resources = json.load(f)
+            comparison_data['ทรัพยากร'][0] = len(resources)
+    except Exception as e:
+        st.warning(f"ไม่สามารถอ่านไฟล์ JSON: {str(e)}")
+
+# นับจำนวนข้อมูลจาก SQLite
+if os.path.exists('data/database.sqlite'):
+    try:
+        cursor = db.conn.execute("SELECT COUNT(*) FROM datasets")
+        comparison_data['ชุดข้อมูล'][1] = cursor.fetchone()[0]
+        cursor = db.conn.execute("SELECT COUNT(*) FROM resources")
+        comparison_data['ทรัพยากร'][1] = cursor.fetchone()[0]
+    except Exception as e:
+        st.warning(f"ไม่สามารถอ่านข้อมูลจาก SQLite: {str(e)}")
+
+# แสดงตารางเปรียบเทียบ
+df_comparison = pd.DataFrame(comparison_data)
+st.table(df_comparison.style.apply(lambda x: ['background-color: #f0f2f6' if i % 2 else '' for i in range(len(x))]))
+
+# แสดงสถานะไฟล์
 col1, col2, col3 = st.columns(3)
 
 with col1:
     # ตรวจสอบไฟล์ JSON
-    json_files = {
-        'datasets': 'data/datasets_info.json',
-        'resources': 'data/dataset_files.json'
-    }
     json_exists = all(os.path.exists(path) for path in json_files.values())
     st.metric(
         "ไฟล์ JSON", 
