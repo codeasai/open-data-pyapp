@@ -135,9 +135,99 @@ def load_datasets():
 def update_dataset(package_id):
     """อัพเดทข้อมูล dataset"""
     try:
-        # ... existing code ...
+        # สร้าง progress bar
+        progress_text = "กำลังอัพเดทข้อมูล..."
+        progress_bar = st.progress(0, text=progress_text)
+        
+        print(f"\n🔄 เริ่มอัพเดทข้อมูลสำหรับ dataset ID: {package_id}")
+        
+        # ขั้นตอนที่ 1: ดึงข้อมูลจาก API
+        progress_bar.progress(0.2, text="กำลังดึงข้อมูลจาก API...")
+        PACKAGE_SHOW_URL = f"https://data.go.th/api/3/action/package_show?id={package_id}"
+        response = requests.get(PACKAGE_SHOW_URL, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        if not data.get("success"):
+            progress_bar.empty()
+            print("❌ API ไม่สามารถดึงข้อมูลได้")
+            return "❌ ไม่สามารถดึงข้อมูลจาก API ได้"
+        
+        # ขั้นตอนที่ 2: เตรียมข้อมูลสำหรับอัพเดท
+        progress_bar.progress(0.4, text="กำลังเตรียมข้อมูล...")
+        package = data['result']
+        
+        # เตรียมข้อมูล dataset
+        resources = package.get('resources', [])
+        
+        # รวบรวมประเภทไฟล์และ URL
+        file_types = set()
+        resource_urls = []
+        for resource in resources:
+            if resource.get('format'):
+                file_types.add(resource['format'].upper())
+            if resource.get('url'):
+                resource_urls.append(resource['url'])
+        
+        dataset_data = {
+            'package_id': package_id,
+            'title': package.get('title', ''),
+            'organization': package.get('organization', {}).get('title', ''),
+            'url': package.get('url', '') or (resource_urls[0] if resource_urls else ''),
+            'last_updated': package.get('metadata_modified', ''),
+            'resource_count': len(resources),
+            'file_types': ', '.join(sorted(file_types)) if file_types else ''
+        }
+        
+        # เตรียมข้อมูล resources
+        resources_data = []
+        for resource in resources:
+            file_format = resource.get('format', '').upper()
+            resources_data.append({
+                'dataset_id': package_id,
+                'file_name': resource.get('name', '') or f"ไฟล์ {file_format}" if file_format else 'ไฟล์ไม่ระบุชื่อ',
+                'format': file_format,
+                'url': resource.get('url', ''),
+                'description': resource.get('description', ''),
+                'ranking': 0  # เก็บ ranking เดิมไว้
+            })
+        
+        # ขั้นตอนที่ 3: อัพเดทฐานข้อมูล
+        progress_bar.progress(0.8, text="กำลังบันทึกข้อมูล...")
+        
+        # ดึง ranking เดิมก่อนอัพเดท
+        existing_resources = db.get_dataset_files(package_id)
+        ranking_map = {r['file_name']: r.get('ranking', 0) for r in existing_resources} if existing_resources else {}
+        
+        # อัพเดท ranking ในข้อมูลใหม่
+        for resource in resources_data:
+            resource['ranking'] = ranking_map.get(resource['file_name'], 0)
+        
+        if db.update_dataset(dataset_data, resources_data):
+            # เสร็จสิ้น
+            progress_bar.progress(1.0, text="อัพเดทข้อมูลสำเร็จ!")
+            time.sleep(1)
+            progress_bar.empty()
+            
+            print(f"✅ อัพเดทข้อมูลสำเร็จ: {package_id}")
+            print(f"📁 ประเภทไฟล์: {dataset_data['file_types']}")
+            print(f"🔗 URL: {dataset_data['url']}\n")
+            
+            # เพิ่มการอัพเดท session state
+            if 'last_update' not in st.session_state:
+                st.session_state.last_update = {}
+            st.session_state.last_update[package_id] = time.time()
+            
+            return "✅ อัพเดทข้อมูลสำเร็จ"
+        else:
+            progress_bar.empty()
+            return "❌ ไม่สามารถบันทึกข้อมูลลงฐานข้อมูลได้"
     except Exception as e:
-        return f"❌ เกิดข้อผิดพลาด: {str(e)}"
+        if 'progress_bar' in locals():
+            progress_bar.empty()
+        error_msg = f"เกิดข้อผิดพลาด: {str(e)}"
+        print(f"❌ {error_msg}")
+        return f"❌ {error_msg}"
 
 def update_dataset_ranking(dataset_id, ranking):
     """อัพเดท ranking ของ dataset"""
