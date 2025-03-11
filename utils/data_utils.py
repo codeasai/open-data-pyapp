@@ -12,7 +12,20 @@ def load_datasets():
     """โหลดข้อมูลชุดข้อมูล"""
     try:
         data = db.get_datasets()
-        return pd.DataFrame(data)
+        # แปลงข้อมูลเป็น DataFrame และเปลี่ยนชื่อคอลัมน์
+        df = pd.DataFrame(data)
+        column_mapping = {
+            'title': 'title',
+            'organization': 'organization',
+            'resource_count': 'resource_count',
+            'file_types': 'file_types',
+            'last_updated': 'last_updated',
+            'package_id': 'package_id',
+            'url': 'url'
+        }
+        # เปลี่ยนชื่อคอลัมน์ถ้ามี
+        df = df.rename(columns=column_mapping)
+        return df
     except Exception as e:
         st.error(f"ไม่สามารถอ่านข้อมูลได้: {str(e)}")
         return None

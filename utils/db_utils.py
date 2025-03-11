@@ -115,7 +115,17 @@ class Database:
     
     def get_datasets(self):
         """ดึงข้อมูลทั้งหมดจากตาราง datasets"""
-        cursor = self.conn.execute("SELECT * FROM datasets")
+        cursor = self.conn.execute("""
+            SELECT 
+                package_id,
+                title,
+                organization,
+                url,
+                resource_count,
+                file_types,
+                last_updated
+            FROM datasets
+        """)
         columns = [description[0] for description in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     
