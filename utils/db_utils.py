@@ -16,6 +16,12 @@ class Database:
             self._local.conn = sqlite3.connect('data/database.sqlite')
         return self._local.conn
     
+    def close(self):
+        """ปิดการเชื่อมต่อ"""
+        if hasattr(self._local, 'conn'):
+            self._local.conn.close()
+            del self._local.conn
+    
     def _create_tables(self):
         """สร้างตารางในฐานข้อมูล"""
         conn = sqlite3.connect('data/database.sqlite')
@@ -45,6 +51,10 @@ class Database:
         """)
         conn.commit()
         conn.close()
+    
+    def __del__(self):
+        """ปิดการเชื่อมต่อเมื่อ object ถูกทำลาย"""
+        self.close()
     
     def migrate_from_json(self):
         """ย้ายข้อมูลจาก JSON เข้า SQLite"""

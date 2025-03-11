@@ -1,4 +1,3 @@
 requests
 pandas
-streamlit
-sqlite3 
+streamlit 
