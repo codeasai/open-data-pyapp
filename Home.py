@@ -88,7 +88,7 @@ with col3:
 
 # ฟิลเตอร์ข้อมูล
 st.subheader("🔍 ค้นหาและกรองข้อมูล")
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 with col1:
     search_term = st.text_input("ค้นหาจากชื่อชุดข้อมูล", "")
@@ -98,6 +98,20 @@ with col2:
         ["ทั้งหมด"] + sorted(df['organization'].unique().tolist())
     )
 with col3:
+    # เพิ่มตัวกรองประเภทองค์กร
+    org_types = ["ทั้งหมด", "กระทรวง", "กรม", "จังหวัด", "องค์กรปกครองส่วนท้องถิ่น", "รัฐวิสาหกิจ", "มหาวิทยาลัย", "อื่นๆ"]
+    selected_org_type = st.selectbox(
+        "ประเภทองค์กร",
+        org_types
+    )
+with col4:
+    # เพิ่มตัวกรองจังหวัด
+    provinces = ["ทั้งหมด"] + sorted([p for p in df['organization'].unique() if "จังหวัด" in p])
+    selected_province = st.selectbox(
+        "จังหวัด",
+        provinces
+    )
+with col5:
     # สร้างรายการประเภทไฟล์ทั้งหมดที่มี
     unique_file_types = get_unique_file_types(df)
     
@@ -105,13 +119,12 @@ with col3:
         "กรองตามประเภทไฟล์",
         ["ทั้งหมด"] + unique_file_types
     )
-
-with col4:
+with col6:
     # เพิ่มตัวกรองตาม ranking
     ranking_filter = st.selectbox(
         "กรองตาม Ranking",
-        ["⭐⭐⭐⭐", "⭐⭐⭐", "⭐⭐", "⭐", "ทั้งหมด"],  # ย้าย 4 ดาวขึ้นมาเป็นตัวแรก
-        index=0,  # ตั้งค่าเริ่มต้นเป็นตัวเลือกแรก (4 ดาว)
+        ["⭐⭐⭐⭐", "⭐⭐⭐", "⭐⭐", "⭐", "ทั้งหมด"],
+        index=0,
         help="กรองข้อมูลตามระดับคุณภาพ"
     )
 
@@ -121,6 +134,10 @@ if search_term:
     filtered_df = filtered_df[filtered_df['title'].str.contains(search_term, case=False, na=False)]
 if selected_org != "ทั้งหมด":
     filtered_df = filtered_df[filtered_df['organization'] == selected_org]
+if selected_org_type != "ทั้งหมด":
+    filtered_df = filtered_df[filtered_df['organization'].str.contains(selected_org_type, case=False, na=False)]
+if selected_province != "ทั้งหมด":
+    filtered_df = filtered_df[filtered_df['organization'] == selected_province]
 if selected_file_type != "ทั้งหมด":
     filtered_df = filtered_df[filtered_df['file_types'].str.contains(selected_file_type, case=False, na=False)]
 
@@ -130,6 +147,94 @@ if ranking_filter != "ทั้งหมด":
     filtered_df = filter_by_ranking(filtered_df, ranking_value)
 
 # แสดงผลข้อมูลในรูปแบบตาราง
+st.subheader("📊 สรุปข้อมูลตามหน่วยงาน")
+
+# สร้างตารางสรุปข้อมูลหน่วยงาน
+org_summary = df.groupby('organization').agg({
+    'title': 'count',
+    'resource_count': 'sum'
+}).reset_index()
+org_summary.columns = ['หน่วยงาน', 'จำนวนชุดข้อมูล', 'จำนวนทรัพยากร']
+org_summary = org_summary.sort_values('จำนวนชุดข้อมูล', ascending=False)
+
+# แสดงตารางสรุปหน่วยงาน
+edited_df = st.data_editor(
+    org_summary,
+    column_config={
+        "หน่วยงาน": st.column_config.TextColumn(
+            "หน่วยงาน",
+            width="large",
+            disabled=True
+        ),
+        "จำนวนชุดข้อมูล": st.column_config.NumberColumn(
+            "จำนวนชุดข้อมูล",
+            width="medium",
+            disabled=True
+        ),
+        "จำนวนทรัพยากร": st.column_config.NumberColumn(
+            "จำนวนทรัพยากร",
+            width="medium",
+            disabled=True
+        )
+    },
+    hide_index=True,
+    use_container_width=True,
+    num_rows="fixed",
+    key="org_summary_table"
+)
+
+# เพิ่มลิงค์สำหรับแต่ละหน่วยงาน
+for _, row in org_summary.iterrows():
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.link_button(
+            "🔗",
+            f"/Organization?org={row['หน่วยงาน']}",
+            help=f"ดูข้อมูลเพิ่มเติมของ {row['หน่วยงาน']}"
+        )
+    with col2:
+        st.markdown(f"**{row['หน่วยงาน']}** - {row['จำนวนชุดข้อมูล']} ชุดข้อมูล, {row['จำนวนทรัพยากร']} ทรัพยากร")
+
+st.markdown("---")
+
+# ดึงข้อมูลหน่วยงานที่เลือกจากตาราง
+if st.session_state.org_summary_table["edited_rows"]:
+    selected_row = list(st.session_state.org_summary_table["edited_rows"].keys())[0]
+    selected_org_detail = edited_df.iloc[selected_row]["หน่วยงาน"]
+else:
+    selected_org_detail = "ทั้งหมด"
+
+# ถ้ามีการเลือกหน่วยงาน
+if selected_org_detail != "ทั้งหมด":
+    st.subheader(f"📋 รายการข้อมูลของ {selected_org_detail}")
+    
+    # กรองข้อมูลเฉพาะหน่วยงานที่เลือก
+    org_data = filtered_df[filtered_df['organization'] == selected_org_detail].copy()
+    
+    # แสดงข้อมูลในรูปแบบตาราง
+    st.dataframe(
+        org_data[['title', 'resource_count', 'file_types', 'last_updated']],
+        column_config={
+            "title": st.column_config.TextColumn("ชื่อชุดข้อมูล", width="large"),
+            "resource_count": st.column_config.NumberColumn("จำนวนทรัพยากร", width="medium"),
+            "file_types": st.column_config.TextColumn("ประเภทไฟล์", width="medium"),
+            "last_updated": st.column_config.TextColumn("ปรับปรุงล่าสุด", width="medium")
+        },
+        hide_index=True,
+        use_container_width=True
+    )
+
+    # เพิ่มลิงค์ไปยังหน้า organization_data
+    st.link_button(
+        "🔗 ดูข้อมูลเพิ่มเติม",
+        f"/Organization?org={selected_org_detail}",
+        help=f"ดูข้อมูลเพิ่มเติมของ {selected_org_detail}",
+        use_container_width=True
+    )
+
+st.markdown("---")
+
+# แสดงรายการชุดข้อมูล
 st.subheader(f"รายการชุดข้อมูล ({len(filtered_df)} รายการ)")
 
 # กำหนดจำนวนรายการต่อหน้า
