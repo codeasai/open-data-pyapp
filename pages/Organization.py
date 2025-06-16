@@ -1,8 +1,11 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime
+import os
 from utils.data_utils import db
 from utils.ui_utils import toggle_theme
 from utils.auth import check_user, login_page
+import json
 
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
@@ -21,6 +24,33 @@ if not check_user():
 
 st.title("🏢 จัดการหน่วยงาน")
 st.markdown("---")
+
+# ฟังก์ชันสำหรับดึงข้อมูลหน่วยงานจาก SQLite
+def get_all_organizations():
+    try:
+        # ดึงข้อมูลหน่วยงานทั้งหมดจากฐานข้อมูล
+        cursor = db.conn.execute("""
+            SELECT DISTINCT organization as name,
+                   COUNT(*) as dataset_count,
+                   MIN(package_id) as deptId
+            FROM datasets
+            GROUP BY organization
+            ORDER BY name
+        """)
+        
+        # แปลงเป็น DataFrame
+        df = pd.DataFrame(cursor.fetchall(), columns=['name', 'dataset_count', 'deptId'])
+        
+        # เพิ่มคอลัมน์ประเภทหน่วยงาน
+        df['org_type'] = df['name'].apply(get_org_type)
+        
+        # เพิ่มคอลัมน์จังหวัด
+        df['province'] = df['name'].apply(get_province)
+        
+        return df
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดในการดึงข้อมูล: {str(e)}")
+        return pd.DataFrame()
 
 # รายชื่อจังหวัดในประเทศไทย
 THAI_PROVINCES = [
@@ -62,31 +92,6 @@ def get_province(org_name):
     return 'ไม่ระบุจังหวัด'
 
 # ดึงข้อมูลหน่วยงานทั้งหมด
-@st.cache_data(ttl=3600)
-def get_all_organizations():
-    cursor = db.conn.execute("""
-        SELECT DISTINCT organization, COUNT(*) as dataset_count
-        FROM datasets
-        GROUP BY organization
-        ORDER BY organization
-    """)
-    df = pd.DataFrame(cursor.fetchall(), columns=['organization', 'dataset_count'])
-    df['org_type'] = df['organization'].apply(get_org_type)
-    df['province'] = df['organization'].apply(get_province)
-    return df
-
-# ดึงข้อมูลชุดข้อมูลของหน่วยงาน
-@st.cache_data(ttl=3600)
-def get_organization_datasets(organization):
-    cursor = db.conn.execute("""
-        SELECT package_id, title, resource_count, file_types, last_updated
-        FROM datasets
-        WHERE organization = ?
-        ORDER BY last_updated DESC
-    """, (organization,))
-    return pd.DataFrame(cursor.fetchall(), columns=['package_id', 'title', 'resource_count', 'file_types', 'last_updated'])
-
-# ดึงข้อมูลหน่วยงานทั้งหมด
 orgs_df = get_all_organizations()
 
 # สร้างตัวกรอง
@@ -119,7 +124,7 @@ filtered_df = orgs_df.copy()
 
 # กรองตามคำค้นหา
 if search_term:
-    filtered_df = filtered_df[filtered_df['organization'].str.contains(search_term, case=False)]
+    filtered_df = filtered_df[filtered_df['name'].str.contains(search_term, case=False)]
 
 # กรองตามประเภทหน่วยงาน
 if selected_types:
@@ -139,7 +144,8 @@ if not filtered_df.empty:
         use_container_width=True,
         hide_index=True,
         column_config={
-            "organization": "ชื่อหน่วยงาน",
+            "deptId": "รหัสหน่วยงาน",
+            "name": "ชื่อหน่วยงาน",
             "org_type": "ประเภทหน่วยงาน",
             "province": "จังหวัด",
             "dataset_count": st.column_config.NumberColumn(
@@ -152,30 +158,49 @@ if not filtered_df.empty:
     # เลือกหน่วยงานเพื่อดูรายละเอียด
     selected_org = st.selectbox(
         "เลือกหน่วยงานเพื่อดูรายละเอียด",
-        options=filtered_df['organization'].tolist()
+        options=filtered_df['name'].tolist()
     )
     
     if selected_org:
         st.subheader(f"📊 ชุดข้อมูลของ {selected_org}")
-        datasets_df = get_organization_datasets(selected_org)
         
-        if not datasets_df.empty:
-            st.dataframe(
-                datasets_df,
-                use_container_width=True,
-                hide_index=True,
-                column_config={
-                    "package_id": "รหัสชุดข้อมูล",
-                    "title": "ชื่อชุดข้อมูล",
-                    "resource_count": st.column_config.NumberColumn(
-                        "จำนวนทรัพยากร",
-                        help="จำนวนทรัพยากรในชุดข้อมูล"
-                    ),
-                    "file_types": "ประเภทไฟล์",
-                    "last_updated": "ปรับปรุงล่าสุด"
-                }
-            )
-        else:
-            st.info("ไม่พบชุดข้อมูลของหน่วยงานนี้")
+        # ดึงข้อมูลชุดข้อมูลของหน่วยงานจากฐานข้อมูล
+        try:
+            cursor = db.conn.execute("""
+                SELECT 
+                    package_id,
+                    title,
+                    resource_count,
+                    file_types,
+                    last_updated
+                FROM datasets
+                WHERE organization = ?
+                ORDER BY last_updated DESC
+            """, (selected_org,))
+            
+            datasets_df = pd.DataFrame(cursor.fetchall(), columns=[
+                'id', 'title', 'resource_count', 'file_types', 'last_updated'
+            ])
+            
+            if not datasets_df.empty:
+                st.dataframe(
+                    datasets_df,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        "id": "รหัสชุดข้อมูล",
+                        "title": "ชื่อชุดข้อมูล",
+                        "resource_count": st.column_config.NumberColumn(
+                            "จำนวนทรัพยากร",
+                            help="จำนวนทรัพยากรในชุดข้อมูล"
+                        ),
+                        "file_types": "ประเภทไฟล์",
+                        "last_updated": "ปรับปรุงล่าสุด"
+                    }
+                )
+            else:
+                st.info("ไม่พบชุดข้อมูลของหน่วยงานนี้")
+        except Exception as e:
+            st.error(f"เกิดข้อผิดพลาดในการดึงข้อมูลชุดข้อมูล: {str(e)}")
 else:
     st.info("ไม่พบข้อมูลหน่วยงาน") 
